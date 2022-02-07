@@ -1,0 +1,17 @@
+{
+  "name": "dio-node-js",
+  "version": "1.0.0",
+  "description": "Aprendendo NodeJS e Type Script",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./",
+    "build" : "tsc -p ."
+  },
+  "author": "Wesley",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^17.0.15",
+    "typescript": "^4.5.5"
+  }
+}
