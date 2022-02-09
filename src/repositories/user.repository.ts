@@ -1,32 +1,15 @@
-import db, { encryptKey } from '../db';
+
+const config = require('config');
+import db from '../db';
 import User from '../models/user.model';
 import DatabaseError from '../models/errors/database.error.models'
 class UserRepository {
-
-
 
     async returnAll(): Promise<User[]> {
         const query = 'SELECT uuid, username, email FROM application_users';
         const promisePool = db.promise();
         const [rows] = await promisePool.query(query);
         return rows || [];
-
-        // const [rows, fields] = await promisePool.query(query)
-        //     .then(([rows, fields]) => {
-        //         console.log(rows);
-        //     })
-        //     .catch(console.log)
-        //     .then(() => db.end());
-
-        // const [rows, fields] = await promisePool.query(query);
-
-
-        // await promisePool.query(query, function (err: any, rows: any, fields: User[]) {
-        //     console.log(err, rows, fields)
-
-        // });
-
-
     }
 
     async findById(uuid: string): Promise<User> {
@@ -42,6 +25,7 @@ class UserRepository {
     }
     async authenticate(email: string, password: string): Promise<User> {
         try {
+            const encryptKey = config.get('authentication.passwordEncryptKey');
             const query = 'SELECT uuid, username, email FROM application_users WHERE (email = ? and CAST(AES_DECRYPT(password, ?) AS CHAR) = ?)'
             const promisePool = db.promise();
             const [row] = await promisePool.query(query, [email, encryptKey, password]);
@@ -55,6 +39,7 @@ class UserRepository {
 
     async create(user: User): Promise<User> {
         try {
+            const encryptKey = config.get('authentication.passwordEncryptKey');
             const queryInsert = `INSERT INTO application_users (username, email, password) Values (?, ?, AES_ENCRYPT(?, ?))`;
             const querySelect = 'SELECT uuid, email, username FROM application_users WHERE email = ?';
             const promisePool = db.promise();
@@ -69,6 +54,7 @@ class UserRepository {
 
     async update(uuid: string, user: User): Promise<void> {
         try {
+            const encryptKey = config.get('authentication.encryptKey');
             const query = 'UPDATE application_users SET username = ?, email = ?, password =  AES_ENCRYPT(?, ?) WHERE (uuid = ?)';
             const promisePool = db.promise();
             await promisePool.query(query, [user.username, user.email, user.password, encryptKey, uuid]);

@@ -4,6 +4,8 @@ import JWT, { SignOptions } from 'jsonwebtoken'
 import basicAuthenticationMiddleware from '../middlewares/basic-authentication.middleware';
 import jwtAuthenticationMiddleware from '../middlewares/jwt-authentication.middleware';
 import ForbiddenError from '../models/errors/forbidden.error.model';
+
+const config = require('config');
 const authorizationRoute = Router();
 
 authorizationRoute.post('/token/validate', jwtAuthenticationMiddleware, async (request: Request, response: Response, next: NextFunction) => {
@@ -18,11 +20,11 @@ authorizationRoute.post('/token', basicAuthenticationMiddleware, async (request:
             throw new ForbiddenError('Usuário ou senha invalidos');
         }
 
-        const payload = { email: user.email };
-        const encriptKey = 'X6yrbMtYn5dEUgmQ';
-        const options: SignOptions = { subject: user?.uuid, expiresIn: '10m' };
+        const jwtPayload = { email: user.email };
+        const jwtSecretKey = config.get('authentication.jwtSecretKey');
+        const jwtOptions: SignOptions = { subject: user?.uuid, expiresIn: '10m' };
 
-        const token = JWT.sign(payload, encriptKey, options);
+        const token = JWT.sign(jwtPayload, jwtSecretKey, jwtOptions);
 
         response.status(StatusCodes.OK).json({ token: token });
     } catch (error) {

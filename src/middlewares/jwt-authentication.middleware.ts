@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import JWT from 'jsonwebtoken';
 import ForbiddenError from '../models/errors/forbidden.error.model';
 import userRepository from '../repositories/user.repository';
+const config = require('config');
 
 async function jwtAuthenticationMiddleware(request: Request, response: Response, next: NextFunction) {
     try {
         const authorizationHeader = request.headers['authorization'];
-        const encriptKey = 'X6yrbMtYn5dEUgmQ';
+        const encriptKey = config.get('authentication.jwtSecretKey');
 
         if (!authorizationHeader) {
             throw new ForbiddenError('Nenhum Token informado');

@@ -1,0 +1,13 @@
+{
+    "database": {
+        "host": "localhost",
+        "userName": "wesley",
+        "password": "Sophi@2601",
+        "database": "dio-node-js",
+        "port": 3306
+    },
+    "authentication": {
+        "jwtSecretKey": "X6yrbMtYn5dEUgmQ",
+        "passwordEncryptKey": "X6yrbMtYn5dEUgmQ"
+    }
+}
