@@ -5,5 +5,5 @@ CREATE TABLE IF NOT EXISTS `application_users` (
   PRIMARY KEY (`uuid`));
 
 SET @chave = 'X6yrbMtYn5dEUgmQ';
-INSERT INTO `application_users` (`username`, `password`) Values ('wesley', AES_ENCRYPT('Sophi@2601', @Chave));
+INSERT INTO application_users (username, email, password) Values ('wesley', 'wesley.a.santos@gmail.com', AES_ENCRYPT('Sophi@2601', 'X6yrbMtYn5dEUgmQ'));
 SELECT username, CAST(AES_DECRYPT(password, @Chave) AS CHAR) from application_users

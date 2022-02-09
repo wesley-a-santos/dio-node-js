@@ -1,7 +1,9 @@
 import express from "express";
-import errorHandler from "./middlewares/error.handler.middleware";
+import jwtAuthenticationMiddleware from "./middlewares/jwt-authentication.middleware";
+import errorHandler from "./middlewares/error-handler.middleware";
+import authorizationRoute from "./routes/authorization.routes";
 import statusRoutes from "./routes/status.routes";
-import usersroute from "./routes/users.route";
+import usersRoute from "./routes/users.route";
 
 const app = express();
 
@@ -11,12 +13,14 @@ app.use(express.urlencoded({ extended: true }));
 
 //Configurações de Rotas
 app.use(statusRoutes);
-app.use(usersroute);
+app.use(authorizationRoute);
+app.use(jwtAuthenticationMiddleware);
+app.use(usersRoute);
 
 //Configuração dos Middlewares
 app.use(errorHandler);
 
 //Inicializar Servidor
 app.listen(3000, () => {
-  console.log('Aplicação executando na porta 3000');
+    console.log('Aplicação executando na porta 3000');
 });

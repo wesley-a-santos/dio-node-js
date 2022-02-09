@@ -3,8 +3,8 @@ import { StatusCodes } from 'http-status-codes';
 
 const statusRoutes = Router();
 
-statusRoutes.get('/status', (req: Request, res: Response, next: NextFunction) => {
-    res.status(StatusCodes.OK).send({ foo: 'bar' })
+statusRoutes.get('/status', (request: Request, response: Response, next: NextFunction) => {
+    response.status(StatusCodes.OK).send({ foo: 'bar' })
 });
 
 export default statusRoutes;

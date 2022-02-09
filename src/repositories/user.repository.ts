@@ -6,7 +6,7 @@ class UserRepository {
 
 
     async returnAll(): Promise<User[]> {
-        const query = 'SELECT uuid, username FROM application_users';
+        const query = 'SELECT uuid, username, email FROM application_users';
         const promisePool = db.promise();
         const [rows] = await promisePool.query(query);
         return rows || [];
@@ -32,9 +32,21 @@ class UserRepository {
     async findById(uuid: string): Promise<User> {
         try {
             const promisePool = db.promise();
-            const [row] = await promisePool.query('SELECT uuid, username FROM application_users WHERE uuid = ?', [uuid]);
+            const [row] = await promisePool.query('SELECT uuid, username, email FROM application_users WHERE uuid = ?', [uuid]);
             const [user] = row;
             return user;
+        } catch (error) {
+            throw new DatabaseError('Erro ao tentar localizar usuário', error);
+        }
+
+    }
+    async authenticate(email: string, password: string): Promise<User> {
+        try {
+            const query = 'SELECT uuid, username, email FROM application_users WHERE (email = ? and CAST(AES_DECRYPT(password, ?) AS CHAR) = ?)'
+            const promisePool = db.promise();
+            const [row] = await promisePool.query(query, [email, encryptKey, password]);
+            const [user] = row;
+            return user || null;
         } catch (error) {
             throw new DatabaseError('Erro ao tentar localizar usuário', error);
         }
